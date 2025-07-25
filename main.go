@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/hirenchhatbar/oauth-client/pkg/oauth"
 	"github.com/joho/godotenv"
@@ -18,11 +17,9 @@ func main() {
 
 	fmt.Println("Environment variables loaded...")
 
-	port, _ := strconv.Atoi(os.Getenv("HTTP_PORT"))
-
 	fmt.Println("Starting server " + os.Getenv("HTTP_SCHEME") + "://" + os.Getenv("HTTP_HOST") + ":" + os.Getenv("HTTP_PORT"))
 
-	errH := oauth.Listen(port)
+	errH := oauth.Listen()
 
 	if errH != nil {
 		panic(errH)

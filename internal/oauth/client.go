@@ -158,9 +158,9 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(token)
 }
 
-func Listen(port int) error {
+func Listen() error {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/token/refresh", refreshHandler)
 
-	return http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	return http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), nil)
 }
