@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Token struct {
@@ -156,6 +158,11 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(token)
+}
+
+func Init() error {
+	err := godotenv.Load()
+	return err
 }
 
 func Listen() error {

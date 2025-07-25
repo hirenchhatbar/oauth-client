@@ -6,16 +6,15 @@ import (
 	"os"
 
 	"github.com/hirenchhatbar/oauth-client/pkg/oauth"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	err := oauth.Init()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Failed to init")
 	}
 
-	fmt.Println("Environment variables loaded...")
+	fmt.Println("App initiated...")
 
 	fmt.Println("Starting server " + os.Getenv("HTTP_SCHEME") + "://" + os.Getenv("HTTP_HOST") + ":" + os.Getenv("HTTP_PORT"))
 
