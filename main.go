@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/hirenchhatbar/oauth-client/oauth"
+	"github.com/hirenchhatbar/oauth-client/pkg/oauth"
 	"github.com/joho/godotenv"
 )
 
