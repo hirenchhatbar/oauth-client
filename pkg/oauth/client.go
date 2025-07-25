@@ -24,6 +24,7 @@ type Config struct {
 	HttpPort           int
 	GoogleClientId     string
 	GoogleClientSecret string
+	TokenJsonPath      string
 }
 
 func (config *Config) url() string {
@@ -49,7 +50,7 @@ func LoadToken(config *Config, code string) ([]byte, error) {
 		return nil, errors.New("Error while reading response of POST request: " + err.Error())
 	}
 
-	err = os.WriteFile("token.json", bodyBytes, 0o600)
+	err = os.WriteFile(config.TokenJsonPath, bodyBytes, 0o600)
 	if err != nil {
 		return nil, errors.New("Error while writing JSON file: " + err.Error())
 	}
@@ -58,14 +59,14 @@ func LoadToken(config *Config, code string) ([]byte, error) {
 }
 
 func RefreshToken(config *Config) ([]byte, error) {
-	data, err := os.ReadFile("token.json")
+	data, err := os.ReadFile(config.TokenJsonPath)
 	if err != nil {
-		return nil, errors.New("Unable to read token.json: " + err.Error())
+		return nil, errors.New("Unable to read " + config.TokenJsonPath + ": " + err.Error())
 	}
 
 	var token Token
 	if err := json.Unmarshal(data, &token); err != nil {
-		return nil, errors.New("Unable to parse token.json: " + err.Error())
+		return nil, errors.New("Unable to parse " + config.TokenJsonPath + ": " + err.Error())
 	}
 
 	refreshToken := token.RefreshToken
@@ -103,7 +104,7 @@ func RefreshToken(config *Config) ([]byte, error) {
 
 	file, _ := json.MarshalIndent(newToken, "", "  ")
 
-	err = os.WriteFile("token.json", file, 0o600)
+	err = os.WriteFile(config.TokenJsonPath, file, 0o600)
 	if err != nil {
 		return nil, errors.New("Failed to save token file: " + err.Error())
 	}
@@ -126,6 +127,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		HttpPort:           port,
 		GoogleClientId:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		TokenJsonPath:      os.Getenv("TOKEN_JSON_PATH"),
 	}, code)
 	if err != nil {
 		http.Error(w, "Failed to load token: "+err.Error(), http.StatusInternalServerError)
@@ -145,6 +147,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		HttpPort:           port,
 		GoogleClientId:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		TokenJsonPath:      os.Getenv("TOKEN_JSON_PATH"),
 	})
 	if err != nil {
 		http.Error(w, "Failed to load token: "+err.Error(), http.StatusInternalServerError)
