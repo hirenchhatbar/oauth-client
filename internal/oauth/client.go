@@ -171,3 +171,23 @@ func Listen() error {
 
 	return http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), nil)
 }
+
+func GetToken() (string, error) {
+	tokenJsonPath := os.Getenv("TOKEN_JSON_PATH")
+	data, err := os.ReadFile(tokenJsonPath)
+	if err != nil {
+		return "", errors.New("Unable to read " + tokenJsonPath + ": " + err.Error())
+	}
+
+	var token Token
+	if err := json.Unmarshal(data, &token); err != nil {
+		return "", errors.New("Unable to parse " + tokenJsonPath + ": " + err.Error())
+	}
+
+	accessToken := token.AccessToken
+	if accessToken == "" {
+		return "", errors.New("No access_token found: " + err.Error())
+	}
+
+	return accessToken, nil
+}

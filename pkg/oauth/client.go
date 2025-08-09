@@ -11,3 +11,7 @@ func Init() error {
 func Listen() error {
 	return oauth.Listen()
 }
+
+func GetToken() (string, error) {
+	return oauth.GetToken()
+}
